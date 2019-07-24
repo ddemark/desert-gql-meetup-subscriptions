@@ -10,8 +10,6 @@
 
 Open up a terminal and navigate to the root directory. Once there, run `./bootstrap.sh` from the command line. Running `bootstrap.sh` should take care of most of the setup; `bootstrap.sh` runs `yarn` and `yarn build` for each of the dependent projects.
 
-Setting up Prisma/Prisma Bindings needed for GraphQL server
-
 ```bash
 ./bootstrap.sh
 docker-compose up
