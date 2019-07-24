@@ -1,44 +1,31 @@
 import React, {useState} from 'react';
-import { Query } from "react-apollo";
-import { gql } from "apollo-boost";
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-
+import {Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap';
+import Examples from './examples';
+import {MaybeScenario} from './types';
+import {SCENARIOS} from './scenarios';
 
 const App: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState('');
+  const [selectedItem, setSelectedItem] = useState<MaybeScenario>(null);
   const toggle = () => setOpen(!isOpen);
   return (
-  <Query
-    query={gql`
-      {
-        scenarios {
-          name,
-          query
-        }
-      }
-    `}
-  >
-    {({ loading, error, data } : any) => {
-      if (loading) return <p>Loading...</p>;
-      if (error) return <p>Error :(</p>;
-
-      return (
-        <Dropdown isOpen={isOpen} toggle={toggle}>
-        <DropdownToggle caret>{selectedItem || "Pick a scenario"}</DropdownToggle>
+    <React.Fragment>
+      <Dropdown isOpen={isOpen} toggle={toggle}>
+        <DropdownToggle caret>{(selectedItem && selectedItem.label) || `Choose A Scenario`}</DropdownToggle>
         <DropdownMenu>
           {
-            data.scenarios.map(({ name }: {name: string}) => 
-              (<DropdownItem 
-                onClick={()=> setSelectedItem(name)}
-                active={selectedItem === name}
-              >{name}</DropdownItem>))
+            SCENARIOS.map((scenario) =>
+              <DropdownItem
+                active={selectedItem === scenario}
+                onClick={()=> setSelectedItem(scenario)}
+              >{scenario.label}</DropdownItem>
+            )
           }
         </DropdownMenu>
       </Dropdown>
-      );
-    }}
-  </Query>
+      <hr />
+      <Examples scenario={selectedItem}/>
+    </React.Fragment>
   );
 }
 

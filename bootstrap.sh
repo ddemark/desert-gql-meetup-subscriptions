@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# stops logging pushd/popd directories
+silentpushd () {
+  command pushd "$@" > /dev/null
+}
+
+silentpopd () {
+  command popd "$@" > /dev/null
+}
+
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
   DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
@@ -8,31 +17,23 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 
-pushd $DIR
+silentpushd $DIR
 echo "Running Yarn"
-pushd graphql
+silentpushd graphql
 yarn
-popd
+silentpopd
 
-pushd socket-stream
+silentpushd ux
 yarn
-popd
-
-pushd ux
-yarn
-popd
+silentpopd
 
 echo "Running Builds"
-pushd graphql
+silentpushd graphql
 yarn build
-popd
+silentpopd
 
-pushd socket-stream
+silentpushd ux
 yarn build
-popd
-
-pushd ux
-yarn build
-popd
-popd
+silentpopd
+silentpopd
 
